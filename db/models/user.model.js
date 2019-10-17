@@ -3,18 +3,19 @@ const Schema = mongoose.Schema;
 
 // Creat Schame anh model
 
-const products = new Schema({
+const users = new Schema({
+    id: String,
     name : String,
-    price: Number,
-    sale_price : Number,
-    image : String,
-    descrition: String,
-    QR_code: String,
-    catalog: String,
+    user_name: String,
+    password : String,
+    avata : String,
+    address: String,
+    location: String,
+    phone: Number,
     status: String,
-    color: String,
+    _toke: String,
 })
 
-const productsChar = mongoose.model('products' , products);
+const usersChar = mongoose.model('users' , users);
 
-module.exports = productsChar;
+module.exports = usersChar;
