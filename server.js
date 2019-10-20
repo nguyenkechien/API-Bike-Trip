@@ -32,7 +32,7 @@ app.use(bodyParser.urlencoded({
 }));
 app.use(bodyParser.json());
 
-app.use('/products/api', personsRoute)
+app.use('/api/products', personsRoute)
 
 app.listen(PORT, function () {
   console.log(`Server is running on Port: ${PORT}`);

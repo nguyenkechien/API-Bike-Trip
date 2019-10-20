@@ -9,15 +9,15 @@ const productsController = require('../controllers/products.controller');
 productsRoutes.route('/').get(productsController.getApiProducs);
 
 // Defined Store route 
-productsRoutes.route('/add').post(productsController.newProducs);
+productsRoutes.route('/content/save').post(productsController.newProducs);
 
 // Defined get edit iddata route
-productsRoutes.route('/edit/:productsId').get(productsController.getIdData);
+productsRoutes.route('/content/:productsId').get(productsController.getIdData);
 
 //  Defined update route post
-productsRoutes.route('/update/:id').post(productsController.updateData)
+productsRoutes.route('/content/update/:id').post(productsController.updateData)
 
 // Defined delete route
-productsRoutes.route('/delete/:id').get(productsController.deleteData);
+productsRoutes.route('/content/delete/:id').get(productsController.deleteData);
 
 module.exports = productsRoutes;

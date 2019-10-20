@@ -58,6 +58,7 @@ module.exports = {
       }
     });
   },
+  
   deleteData: (req, res , next) => {
     productsChar.findByIdAndRemove({
       _id: req.params.id
