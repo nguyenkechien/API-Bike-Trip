@@ -1,19 +1,18 @@
 const express = require('express');
 const usersRoutes = express.Router();
-const auth = require("../middleware/auth.middleware");
 
 // require model usersController
 const usersController = require('../controllers/users.controller');
 
 // Defined get data(index or listing) route
 
-usersRoutes.route('/').get(auth, usersController.getApiUsers);
+usersRoutes.route('/').get(usersController.getApiUsers);
 
 // Defined Store route 
-usersRoutes.route('/registration').post(usersController.newUsers);
+usersRoutes.route('/content/save').post(usersController.newUsers);
 
 // Defined get edit iddata route
-usersRoutes.route('/login').post(usersController.LoginUser);
+usersRoutes.route('/content/:id').get(usersController.getIdData);
 
 //  Defined update route post
 usersRoutes.route('/content/update/:id').post(usersController.updateData)

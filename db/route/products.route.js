@@ -12,7 +12,7 @@ productsRoutes.route('/').get(productsController.getApiProducs);
 productsRoutes.route('/content/save').post(productsController.newProducs);
 
 // Defined get edit iddata route
-productsRoutes.route('/content/:productsId').get(productsController.getIdData);
+productsRoutes.route('/content/:id').get(productsController.getIdData);
 
 //  Defined update route post
 productsRoutes.route('/content/update/:id').post(productsController.updateData)

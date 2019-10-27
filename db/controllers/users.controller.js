@@ -1,55 +1,104 @@
-const productsChar = require('../models/user.model');
+const {
+  usersChar,
+  validateUser,
+  validateLoginUser
+} = require('../models/user.model');
+const bcrypt = require("bcrypt");
+const jwt = require('jsonwebtoken');
+const config = require('config');
 
 module.exports = {
-  getApiProducs: (req, res, next) => {
-    productsChar.find((err, products) => {
+  getApiUsers: (req, res, next) => {
+    usersChar.find((err, users) => {
       if (err) {
         console.log(`Can't get API : ${err}`);
       } else {
-        res.json(products);
+        res.json(users);
       }
     });
   },
 
-  newProducs: (req, res, next) => {
-    const newProduct = new productsChar(req.body);
-    newProduct.save()
-    .then(product => {
-        res.status(200).json({
-          product: 'product in added successfully',
-          newProduct
-        });
-      })
-      .catch(err => {
-        res.status(400).send('unable to save to database');
-        console.log(err)
-      });
-  },
+  newUsers: async (req, res, next) => {
+    // ckeck validate
+    const {
+      error
+    } = validateUser(req.body);
+    if (error) return res.status(400).send(error.details[0].message);
 
-  getIdData: (req, res, next) => {
-    let id = req.params.id;
-    productsChar.findById(id, (err, business) => {
-      res.json(business);
+    let emailExist = await usersChar.findOne({
+      email: req.body.email
     });
+    if (emailExist) return res.status(400).send("User already registered.");
+
+    const newUser = new usersChar(req.body);
+    // hash password
+    // const slat = bcrypt
+    newUser.password = await bcrypt.hash(newUser.password, 10)
+    try {
+      const user = await newUser.save();
+
+      const _token = newUser.generateAuthToken();
+
+      res.header("x-auth-token", _token).send({
+        _id: user._id,
+        fullname: user.fullname,
+        email: user.email,
+        user_name: user.user_name
+      });
+
+    } catch (error) {
+      console.log(error)
+      res.status(400).send(error)
+    }
   },
 
-  updateData : (req, res, next) => {
-    productsChar.findById(req.params.id, function (err, newProduct) {
-      if (!newProduct) {
+  LoginUser: async (req, res, next) => {
+    // ckeck validate
+    const {
+      error
+    } = validateLoginUser(req.body);
+    if (error) return res.status(400).send(error.details[0].message);
+    console.log(error)
+
+    let user = await usersChar.findOne({
+      email: req.body.email
+    });
+    if (!user) return res.status(400).send("Email Or password is wrong.");
+    console.log(user)
+
+    const validPassword = await bcrypt.compare(req.body.password, user.password);
+    console.log(validPassword)
+
+    if (!validPassword) {
+      return res.status(400).send('Invalid password.')
+    }
+
+    const _token = user.generateAuthToken();
+    res.header('x-auth-token', _token).send({
+      _id: user._id,
+      fullname: user.fullname,
+      email: user.email,
+      user_name: user.user_name
+    })
+    next();
+  },
+
+  updateData: (req, res, next) => {
+    usersChar.findById(req.params.id, function (err, newUser) {
+      if (!newUser) {
         res.status(404).send('data is not found');
       } else {
-        console.log(newProduct);
-        newProduct.name = req.body.name;
-        newProduct.price = req.body.price;
-        newProduct.sale_price = req.body.sale_price;
-        newProduct.image = req.body.image;
-        newProduct.descrition = req.body.descrition;
-        newProduct.QR_code = req.body.QR_code;
-        newProduct.catalog = req.body.catalog;
-        newProduct.status = req.body.status;
-        newProduct.color = req.body.color;
-  
-        newProduct.save().then(business => {
+        console.log(newUser);
+        newUser.name = req.body.name;
+        newUser.user_name = req.body.user_name;
+        newUser.password = req.body.password;
+        newUser.avatar = req.body.avatar;
+        newUser.address = req.body.address;
+        newUser.location = req.body.location;
+        newUser.phone = req.body.phone;
+        newUser.status = req.body.status;
+
+        newUser.save().then(business => {
             res.json('update complate');
           })
           .catch(err => {
@@ -58,8 +107,8 @@ module.exports = {
       }
     });
   },
-  deleteData: (req, res , next) => {
-    productsChar.findByIdAndRemove({
+  deleteData: (req, res, next) => {
+    usersChar.findByIdAndRemove({
       _id: req.params.id
     }, function (err, person) {
       if (err) res.json(err);
