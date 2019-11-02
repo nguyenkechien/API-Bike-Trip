@@ -27,6 +27,7 @@ mongoose.connect(configDB.DB, {
   reconnectTries: 100,
   reconnectInterval: 500,
   autoReconnect: true,
+  useFindAndModify: true,
   dbName: 'bike-trip'
 }).then(() => {
     console.log(`Database is connected`)
