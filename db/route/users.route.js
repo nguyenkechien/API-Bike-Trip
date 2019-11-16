@@ -16,9 +16,9 @@ usersRoutes.route('/registration').post(usersController.newUsers);
 usersRoutes.route('/login').post(usersController.LoginUser);
 
 //  Defined update route post
-usersRoutes.route('/content/update/:id').post(usersController.updateData)
+usersRoutes.route('/content/update/:id').post(auth,usersController.updateData)
 
 // Defined delete route
-usersRoutes.route('/content/delete/:id').get(usersController.deleteData);
+usersRoutes.route('/content/delete/:id').get(auth,usersController.deleteData);
 
 module.exports = usersRoutes;

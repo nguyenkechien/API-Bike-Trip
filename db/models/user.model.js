@@ -51,15 +51,18 @@ const users = new Schema({
     },
     isAdmin: Boolean,
     status: String,
-    _toke: String
+    // _toke: String
 });
 
 users.methods.generateAuthToken = function () {
     const _toke = jwt.sign({
             _id: this._id,
+            user_name: this.user_name,
             isAdmin: this.isAdmin
         },
-        config.get("privatekey")
+        config.get("privatekey"), {
+            expiresIn: 60 * 60 * 24 // expires in 24 hours
+        }
     );
     return _toke;
 };
@@ -82,11 +85,12 @@ function validateUser(user) {
 
     return Joi.validate(user, schema);
 }
+
 function validateLoginUser(user) {
     const schema = {
         // user_name: Joi.string().min(3).max(50).required(),
         password: Joi.string().min(3).max(255).required(),
-        email: Joi.string().min(5).max(255).required().email(),
+        user_name: Joi.string().min(3).max(50).required(),
     };
 
     return Joi.validate(user, schema);

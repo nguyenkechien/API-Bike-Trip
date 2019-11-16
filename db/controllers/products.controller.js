@@ -15,10 +15,8 @@ module.exports = {
     const newProduct = new productsChar(req.body);
     newProduct.save()
     .then(product => {
-        res.status(200).json({
-          product: 'product in added successfully',
-          newProduct
-        });
+        res.status(200).send(newProduct);
+        console.log(newProduct)
       })
       .catch(err => {
         res.status(400).send('unable to save to database');
@@ -27,7 +25,7 @@ module.exports = {
   },
 
   getIdData: (req, res, next) => {
-    let id = req.params.productsId;
+    let id = req.params.id;
     productsChar.findById(id, (err, business) => {
       res.json(business);
     });

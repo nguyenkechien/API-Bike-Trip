@@ -1,14 +1,15 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
+
 // Creat Schame anh model
 const gallerySchema = new Schema({
     img: String,
     alt: String
 });
-
+let i = 0;
 const products = new Schema({
-    id: String,
+    // index: ObjectId('a'),
     name : String,
     price: Number,
     sale_price : Number,
@@ -17,7 +18,8 @@ const products = new Schema({
     descrition: String,
     QR_code: String,
     catalog: String,
-    status: String,
+    hot: Boolean,
+    status: Boolean,
     color: String,
 })
 
