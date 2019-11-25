@@ -1,13 +1,18 @@
 const express = require("express");
 const app = express();
 const bodyParser = require("body-parser");
-const PORT = 4000;
+const PORT = 4000 || process.env.PORT;
 const cors = require("cors");
 const mongoose = require("mongoose");
 const configDB = require("./config/connection.js");
-const personsRoute = require("./db/route/products.route");
-const usersRoute = require("./db/route/users.route");
+const productsRoutes = require("./db/route/products.route");
+const usersRoutes = require("./db/route/users.route");
+const catalogRoutes = require("./db/route/catalog.route");
+const contactRoutes = require("./db/route/contact.route");
 const config = require("config");
+const multer = require('multer');
+const upload = multer({dest: __dirname + '/uploads/images'});
+
 
 //use config module to get the privatekey, if no private key set, end the application
 if (!config.get("privatekey")) {
@@ -30,30 +35,40 @@ mongoose
     useFindAndModify: true,
     dbName: "bike-trip"
   })
-  .then(
-    () => {
-      console.log(`Database is connected`);
-    },
-    err => {
-      console.log(err);
-    }
-  );
+  .then(() => {
+    console.log(`Database is connected`);
+  })
+  .catch(err => {
+    console.log(err);
+  });
 
 app.use(cors());
+
 app.use(
   bodyParser.urlencoded({
     extended: true
   })
 );
 app.use(bodyParser.json());
-// app.use(express.json());
+app.use(express.json());
+app.use(express.static('public'));
 
-app.use("/api/products", personsRoute);
-app.use("/api/users", usersRoute);
+app.use("/api/users", usersRoutes);
+app.use("/api/catalog", catalogRoutes);
+app.use("/api/contact", contactRoutes);
+app.use("/api/products", productsRoutes);
 
-app.listen(PORT, function() {
-  console.log(`Server is running on Port: ${PORT}`);
-  // console.log(`pass DB ${process.env.MONGO_ATLAT}`)
+
+// Defined
+app.post('/api/uploadimage', upload.single('photo'), (req, res) => {
+  if(req.file) {
+      res.json(req.file);
+  }
+  else throw 'error';
 });
 
 
+app.listen(PORT, () => {
+  console.log(`Server is running on Port: ${PORT}`);
+  // console.log(`pass DB ${process.env.MONGO_ATLAT}`)
+});

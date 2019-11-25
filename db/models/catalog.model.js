@@ -1,20 +1,37 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
+const Joi = require("joi");
 
 // Creat Schame anh model
 
-const users = new Schema({
-    id: String,
-    name: String,
-    user_name: String,
-    password : String,
-    avata : String,
-    address: String,
-    location: String,
-    phone: Number,
-    status: String,
-})
+const catalogs = new Schema({
+  nameCatalog: {
+    type: String,
+    required: true,
+    minlength: 2,
+    maxlength: 255,
+    unique: true
+  },
+  descriptionCatalog: {
+    type: String
+  }
+});
 
-const usersChar = mongoose.model('users' , users);
+const validateCatalog = data => {
+  const schema = {
+    nameCatalog: Joi.string()
+      .required()
+      .min(2)
+      .max(255),
+    descriptionCatalog: Joi.string()
+  };
 
-module.exports = usersChar;
+  return Joi.validate(data, schema);
+};
+
+const catalogChar = mongoose.model("catalogs", catalogs);
+
+module.exports = {
+  catalogChar,
+  validateCatalog
+};

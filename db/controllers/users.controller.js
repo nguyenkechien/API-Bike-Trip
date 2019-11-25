@@ -26,6 +26,7 @@ module.exports = {
     let emailExist = await usersChar.findOne({
       email: req.body.email
     });
+    
     if (emailExist) return res.status(401).send("User already registered.");
 
     const newUser = new usersChar(req.body);
@@ -78,11 +79,10 @@ module.exports = {
       });
     }
 
-    next();
-
     console.log(`check password: ${validPassword}`);
 
     const _token = user.generateAuthToken();
+
     res.header("x-auth-token", _token).send({
       _id: user._id,
       fullname: user.fullname,
