@@ -64,14 +64,15 @@ app.use("/api/products", productsRoutes);
 //   else throw 'error';
 // });
 
-var storage = multer.diskStorage({
-  destination: function(req, file, cb) {
-    cb(null, "public");
-  },
-  filename: function(req, file, cb) {
-    cb(null, Date.now() + "-" + file.originalname);
-  }
-});
+// var storage = multer.diskStorage({
+//   destination: function(req, file, cb) {
+//     cb(null, "/uploads/images");
+//   },
+
+//   filename: function(req, file, cb) {
+//     cb(null, Date.now() + "-" + file.originalname);
+//   }
+// });
 
 // var upload = multer({ storage: storage }).single("images");
 const upload = multer({ dest: __dirname + "/uploads/images" }).single("images");
