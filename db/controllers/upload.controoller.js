@@ -1,6 +1,5 @@
 const multer = require("multer");
 const imagesChar = require("../models/images.model");
-const myURL = new URL(process.env.URL);
 
 module.exports = {
   getImages: async (req, res, next) => {
@@ -18,19 +17,20 @@ module.exports = {
     }
   },
   newImage: async (req, res, next) => {
+
     var storage = multer.diskStorage({
       destination: function(req, file, cb) {
-        cb(null, __dirname + "/uploads/images");
+        cb(null, process.env.Domain + "/uploads/images");
       },
-
+    
       filename: function(req, file, cb) {
         cb(null, Date.now() + "-" + file.originalname);
       }
     });
 
-    const upload = multer({ storage: storage }).single("images");
+    const Upload = multer({ storage: storage }).single("images");
 
-    upload(req, res, function(err) {
+    Upload(req, res, async function(err) {
       if (err instanceof multer.MulterError) {
         console.log(err);
         return res.status(500).json(err);
@@ -38,7 +38,16 @@ module.exports = {
         console.log(err);
         return res.status(500).json(err);
       }
-      return res.status(200).send(req.file);
+      let newImg = {
+        nameImage : req.file.filename,
+        altImage : req.file.originalname,
+        urlImage : process.env.URL + "uploads/images/" + req.file.filename
+      }
+      console.log(process.env.URL)
+      const newImage = new imagesChar(newImg);
+      let newImageSave = await newImage.save();
+      console.log(newImageSave)
+      return res.status(200).send(newImageSave);
     });
   }
 };

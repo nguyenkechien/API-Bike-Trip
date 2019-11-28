@@ -11,7 +11,9 @@ const catalogRoutes = require("./db/route/catalog.route");
 const contactRoutes = require("./db/route/contact.route");
 const uploadRoute = require("./db/route/upload.route");
 const config = require("config");
-const multer = require("multer");
+const http = require("http");
+const path = require('path');
+process.env.Domain = __dirname;
 
 //use config module to get the privatekey, if no private key set, end the application
 if (!config.get("privatekey")) {
@@ -50,15 +52,29 @@ app.use(
 );
 app.use(bodyParser.json());
 app.use(express.json());
-app.use(express.static("public"));
-
+app.use(express.static(process.env.Domain + "uploads/images"));
+// -------------------------------
 app.use("/api/users", usersRoutes);
 app.use("/api/catalog", catalogRoutes);
 app.use("/api/contact", contactRoutes);
 app.use("/api/products", productsRoutes);
 app.use("/api/uploadimage", uploadRoute);
-
-app.listen(PORT, () => {
-  console.log(`Server is running on Port: ${PORT}`);
-  // console.log(`pass DB ${process.env.MONGO_ATLAT}`)
+app.get("/uploads/images/:img", (req, res, nexr)=>{
+  const img = req.params.img;
+  console.log(__dirname + `\${img}`)
+  res.sendFile(path.join(__dirname + `/uploads/images/${img}`));
+})
+app.get("*",function (req, res) {
+  res.status(404).send('<h1 style="text-align: center; color: red">404 Not found</h1>');
 });
+// --------------------------------
+
+// const server = http.createServer(app);
+
+// server.listen(PORT, () => {
+//   console.log("Server starting on port : " + PORT)
+// });
+
+app.listen(PORT, ()=>{
+  console.log("Server starting on port : " + PORT)
+})

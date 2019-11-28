@@ -18,7 +18,10 @@ module.exports = {
 
   newProduct: async (req, res, next) => {
     const { error } = validateProducts(req.body);
-    if (error) return res.status(401).send(error.details[0].message);
+
+    if (error) {
+      return res.status(401).send(error.details[0].message);
+    }
 
     const newProduct = new productsChar(req.body);
     let newProductSave = await newProduct.save();
