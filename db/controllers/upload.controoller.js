@@ -1,5 +1,6 @@
 const multer = require("multer");
 const imagesChar = require("../models/images.model");
+const myURL = new URL(process.env.URL);
 
 module.exports = {
   getImages: async (req, res, next) => {
@@ -17,7 +18,6 @@ module.exports = {
     }
   },
   newImage: async (req, res, next) => {
-      
     var storage = multer.diskStorage({
       destination: function(req, file, cb) {
         cb(null, __dirname + "/uploads/images");
