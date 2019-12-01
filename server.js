@@ -13,6 +13,9 @@ const uploadRoute = require("./db/route/upload.route");
 const config = require("config");
 const http = require("http");
 const path = require('path');
+
+
+// Domain
 process.env.Domain = __dirname;
 
 //use config module to get the privatekey, if no private key set, end the application
@@ -59,22 +62,21 @@ app.use("/api/catalog", catalogRoutes);
 app.use("/api/contact", contactRoutes);
 app.use("/api/products", productsRoutes);
 app.use("/api/uploadimage", uploadRoute);
-app.get("/uploads/images/:img", (req, res, nexr)=>{
+app.get("/images/:img", (req, res, nexr) => {
   const img = req.params.img;
-  console.log(__dirname + `\${img}`)
   res.sendFile(path.join(__dirname + `/uploads/images/${img}`));
 })
-app.get("*",function (req, res) {
+app.get("*", function (req, res) {
   res.status(404).send('<h1 style="text-align: center; color: red">404 Not found</h1>');
 });
 // --------------------------------
 
-// const server = http.createServer(app);
+const server = http.createServer(app);
 
-// server.listen(PORT, () => {
-//   console.log("Server starting on port : " + PORT)
-// });
-
-app.listen(PORT, ()=>{
+server.listen(PORT, () => {
   console.log("Server starting on port : " + PORT)
-})
+});
+
+// app.listen(PORT, ()=>{
+//   console.log("Server starting on port : " + PORT)
+// })

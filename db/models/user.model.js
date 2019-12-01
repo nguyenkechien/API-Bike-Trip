@@ -11,8 +11,7 @@ const users = new Schema({
     type: String
   },
   user_name: {
-    type: String,
-    required: true,
+    type: String, required: true,
     minlength: 3,
     maxlength: 50,
     unique: true
@@ -56,7 +55,6 @@ const users = new Schema({
   },
   isAdmin: Boolean,
   status: Boolean
-  // _toke: String
 });
 
 users.methods.generateAuthToken = function() {
