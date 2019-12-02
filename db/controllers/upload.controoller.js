@@ -56,6 +56,7 @@ module.exports = {
       }
     });
   },
+
   newGallerys: async (req, res, next) => {
     const storage = multer.diskStorage({
       destination: function(req, file, cb) {
@@ -99,6 +100,7 @@ module.exports = {
       return res.status(200).send(files);
     });
   },
+  
   deleteData: (req, res, next) => {
     imagesChar.findByIdAndRemove(
       {
