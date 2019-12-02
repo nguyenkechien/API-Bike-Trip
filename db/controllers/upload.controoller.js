@@ -43,10 +43,9 @@ module.exports = {
         altImage : req.file.originalname,
         urlImage : process.env.URL + "uploads/images/" + req.file.filename
       }
-      console.log(process.env.URL)
       const newImage = new imagesChar(newImg);
       let newImageSave = await newImage.save();
-      console.log(newImageSave)
+      
       return res.status(200).send(newImageSave);
     });
   }

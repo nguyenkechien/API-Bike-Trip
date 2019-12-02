@@ -61,7 +61,6 @@ app.use("/api/products", productsRoutes);
 app.use("/api/uploadimage", uploadRoute);
 app.get("/uploads/images/:img", (req, res, nexr)=>{
   const img = req.params.img;
-  console.log(__dirname + `\${img}`)
   res.sendFile(path.join(__dirname + `/uploads/images/${img}`));
 })
 app.get("*",function (req, res) {
@@ -69,12 +68,12 @@ app.get("*",function (req, res) {
 });
 // --------------------------------
 
-// const server = http.createServer(app);
+const server = http.createServer(app);
 
-// server.listen(PORT, () => {
-//   console.log("Server starting on port : " + PORT)
-// });
-
-app.listen(PORT, ()=>{
+server.listen(PORT, () => {
   console.log("Server starting on port : " + PORT)
-})
+});
+
+// app.listen(PORT, ()=>{
+//   console.log("Server starting on port : " + PORT)
+// })
