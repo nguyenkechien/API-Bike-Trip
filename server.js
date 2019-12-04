@@ -14,7 +14,6 @@ const config = require("config");
 const http = require("http");
 const path = require('path');
 
-
 // Domain
 process.env.Domain = __dirname;
 
@@ -76,7 +75,3 @@ const server = http.createServer(app);
 server.listen(PORT, () => {
   console.log("Server starting on port : " + PORT)
 });
-
-// app.listen(PORT, ()=>{
-//   console.log("Server starting on port : " + PORT)
-// })
