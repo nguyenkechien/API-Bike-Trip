@@ -86,6 +86,8 @@ module.exports = {
     res.header("x-auth-token", _token).send({
       _id: user._id,
       fullname: user.fullname,
+      location: user.location,
+      email: user.email,
       isAdmin: user.isAdmin,
       avatar: user.avatar,
       _token: _token
