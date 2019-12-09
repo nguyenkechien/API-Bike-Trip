@@ -63,7 +63,8 @@ module.exports = {
     );
     try {
       res.status(200).json({
-        message: "update complate"
+        message: "update complate",
+        
       });
     } catch (error) {
       res.status(404).send("data is not found");

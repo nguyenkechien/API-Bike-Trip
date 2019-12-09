@@ -4,18 +4,19 @@ const {
   validateLoginUser
 } = require("../models/user.model");
 const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
-const config = require("config");
+
 
 module.exports = {
   getApiUsers: (req, res, next) => {
-    usersChar.find((err, users) => {
-      if (err) {
-        console.log(`Can't get API : ${err}`);
-      } else {
-        res.json(users);
-      }
-    });
+    if (req.user.isAdmin) {
+      usersChar.find((err, users) => {
+        if (err) {
+          console.log(`Can't get API : ${err}`);
+        } else {
+          res.json(users);
+        }
+      });
+    }
   },
 
   newUsers: async (req, res, next) => {
@@ -26,12 +27,11 @@ module.exports = {
     let emailExist = await usersChar.findOne({
       email: req.body.email
     });
-    
+
     if (emailExist) return res.status(401).send("User already registered.");
 
     const newUser = new usersChar(req.body);
     // hash password
-    // const slat = bcrypt
     newUser.password = await bcrypt.hashSync(newUser.password, 1);
     try {
       const user = await newUser.save();
@@ -41,8 +41,10 @@ module.exports = {
       res.header("x-auth-token", _token).send({
         _id: user._id,
         fullname: user.fullname,
+        location: user.location,
         email: user.email,
-        user_name: user.user_name,
+        isAdmin: user.isAdmin,
+        avatar: user.avatar,
         _token: _token
       });
     } catch (error) {
@@ -62,13 +64,13 @@ module.exports = {
     let user = await usersChar.findOne({
       user_name: req.body.user_name
     });
-    
+
     if (!user) {
       return res.status(400).send({
         message: "User Name is wrong."
       });
     }
-    
+
     let validPassword = await bcrypt.compareSync(
       req.body.password,
       user.password
@@ -80,6 +82,18 @@ module.exports = {
     }
 
     console.log(`check password: ${validPassword}`);
+
+    const origin = req.headers.referer;
+
+    const path = origin.split(/[/]/)
+
+    if (path[3] === "login") {
+      if (!user.isAdmin) {
+        return res.status(400).send({
+          message: "You do not have access."
+        });
+      }
+    }
 
     const _token = user.generateAuthToken();
 
@@ -95,32 +109,63 @@ module.exports = {
     next();
   },
 
-  updateData: (req, res, next) => {
-    usersChar.findById(req.params.id, function(err, newUser) {
-      if (!newUser) {
-        res.status(404).send("data is not found");
-      } else {
-        console.log(newUser);
-        newUser.name = req.body.name;
-        newUser.user_name = req.body.user_name;
-        newUser.password = req.body.password;
-        newUser.avatar = req.body.avatar;
-        newUser.address = req.body.address;
-        newUser.location = req.body.location;
-        newUser.phone = req.body.phone;
-        newUser.status = req.body.status;
-
-        newUser
-          .save()
-          .then(business => {
-            res.json("update complate");
-          })
-          .catch(err => {
-            res.status(404).send("Can't update the database");
-          });
-      }
+  getIdData: async (req, res, next) => {
+    let id = req.params.id;
+    const findByIdUser = await usersChar.findById(id, business => {
+      return business;
     });
+
+    try {
+      res.status(200).json(findByIdUser);
+    } catch (error) {
+      res.status(400).send({
+        message: `Error ID`
+      });
+      console.log(`Error _ID : ${error}`);
+    }
   },
+
+  updateData: async (req, res, next) => {
+    const { error } = validateUser(req.body);
+    if (error) return res.status(401).send(error.details[0].message);
+    let id = req.params.id;
+    const findByIdUser = await usersChar.findById(
+      id,
+      (err, updateUser) => {
+        if (!updateUser) {
+          return res.status(404).send("data is not found");
+        } else {
+          updateUser.fullname = req.body.fullname;
+          updateUser.user_name = req.body.user_name;
+          updateUser.password = req.body.password;
+          updateUser.email = req.body.email;
+          updateUser.avatar = req.body.avatar;
+          updateUser.address = req.body.address;
+          updateUser.location = req.body.location;
+          updateUser.phone = req.body.phone;
+          updateUser.status = req.body.status;
+          updateUser.isAdmin = req.body.isAdmin;
+          
+          updateUser.password = bcrypt.hashSync(updateUser.password, 1);
+  
+          updateUser.save();
+
+          try {
+            console.log(updateUser);
+            res.status(200).json({
+              message: "update complate",
+              business: updateUser
+            });
+          } catch (error) {
+            res.status(404).send("data is not found");
+            console.log(error);
+          }
+          return updateUser;
+        }
+      }
+    );
+  },
+
   deleteData: (req, res, next) => {
     usersChar.findByIdAndRemove(
       {

@@ -11,7 +11,8 @@ const users = new Schema({
     type: String
   },
   user_name: {
-    type: String, required: true,
+    type: String,
+    required: true,
     minlength: 3,
     maxlength: 50,
     unique: true
@@ -53,7 +54,10 @@ const users = new Schema({
     type: Date,
     default: Date.now
   },
-  isAdmin: Boolean,
+  isAdmin: {
+    type: Boolean,
+    required: true
+  },
   status: Boolean
 });
 
@@ -97,7 +101,7 @@ function validateUser(user) {
     avatar: Joi.string(),
     address: Joi.string(),
     location: Joi.string(),
-    isAdmin: Joi.boolean(),
+    isAdmin: Joi.boolean().required(),
     status: Joi.boolean()
   };
 
@@ -107,13 +111,13 @@ function validateUser(user) {
 function validateLoginUser(user) {
   const schema = {
     user_name: Joi.string()
-    .min(3)
-    .max(50)
-    .required(),
+      .min(3)
+      .max(50)
+      .required(),
     password: Joi.string()
       .min(3)
       .max(255)
-      .required(),
+      .required()
   };
 
   return Joi.validate(user, schema);

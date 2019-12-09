@@ -16,6 +16,9 @@ usersRoutes.route('/registration').post(usersController.newUsers);
 usersRoutes.route('/login').post(usersController.LoginUser);
 
 //  Defined update route post
+usersRoutes.route('/content/:id').get(usersController.getIdData);
+
+//  Defined update route post
 usersRoutes.route('/content/update/:id').post(auth,usersController.updateData)
 
 // Defined delete route
