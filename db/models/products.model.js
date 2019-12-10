@@ -4,6 +4,7 @@ const Joi = require("joi");
 
 // Creat Schame anh model
 const gallerySchema = new Schema({
+  _id: String,
   img: String,
   alt: String
 });
