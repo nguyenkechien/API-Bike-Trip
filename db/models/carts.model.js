@@ -54,6 +54,7 @@ const userSchema = new Schema({
 });
 
 const visaCardSchema = new Schema({
+  _id: String,
   cvv: String,
   name_on_card: String,
   card_number: String,
