@@ -1,6 +1,6 @@
 {
   "env" : {
     "MONGO_ATLAT" : "bfokM4oivonpGvfE",
-    "URL" : "http://localhost:4000/"
+    "URL" : "ec2-52-26-156-119.us-west-2.compute.amazonaws.com"
   }
 }
