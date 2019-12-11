@@ -1,7 +1,7 @@
 const express = require("express");
 const app = express();
 const bodyParser = require("body-parser");
-const PORT = 80 || process.env.PORT;
+const PORT =  process.env.PORT || 80;
 const cors = require("cors");
 const mongoose = require("mongoose");
 const configDB = require("./config/connection.js");
@@ -17,6 +17,7 @@ const path = require('path');
 
 // Domain
 process.env.Domain = __dirname;
+process.env.URL = 'http://ec2-34-216-21-131.us-west-2.compute.amazonaws.com:4000/';
 
 //use config module to get the privatekey, if no private key set, end the application
 if (!config.get("privatekey")) {
