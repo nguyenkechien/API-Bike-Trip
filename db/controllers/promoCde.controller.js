@@ -17,7 +17,7 @@ module.exports = {
   },
 
   newPromo: async (req, res, next) => {
-    const { error } = validateContacts(req.body);
+    const { error } = validatePromoCode(req.body);
     if (error) return res.status(401).send(error.details[0].message);
 
     const newPromo = new promoCodesChar(req.body);
