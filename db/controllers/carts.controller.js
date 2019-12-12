@@ -91,5 +91,10 @@ module.exports = {
         else res.json("Successfully removed");
       }
     );
+  },
+
+  checkCode: async (req,res,next) => {
+    
   }
+  
 };
