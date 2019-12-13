@@ -1,3 +1,4 @@
+
 const express = require("express");
 const app = express();
 const bodyParser = require("body-parser");
@@ -11,6 +12,7 @@ const catalogRoutes = require("./db/route/catalog.route");
 const contactRoutes = require("./db/route/contact.route");
 const uploadRoute = require("./db/route/upload.route");
 const cartsRoutes = require("./db/route/carts.route");
+const promoRoutes = require("./db/route/promoCode.route");
 const config = require("config");
 const http = require("http");
 const path = require('path');
@@ -63,6 +65,7 @@ app.use("/api/catalog", catalogRoutes);
 app.use("/api/contact", contactRoutes);
 app.use("/api/products", productsRoutes);
 app.use("/api/cart", cartsRoutes);
+app.use("/api/promocode", promoRoutes);
 app.use("/api/uploadimage", uploadRoute);
 app.get("/images/:img", (req, res, nexr) => {
   const img = req.params.img;
