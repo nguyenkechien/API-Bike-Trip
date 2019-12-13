@@ -18,6 +18,7 @@ cartsRoutes.route('/content/:id').get(cartsController.getIdData);
 //  Defined update route post
 cartsRoutes.route('/content/update/:id').post(auth, cartsController.updateData)
 
+
 // Defined delete route
 cartsRoutes.route('/content/delete/:id').get(cartsController.deleteData);
 

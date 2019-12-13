@@ -72,6 +72,7 @@ module.exports = {
           updateProduct.hot = req.body.hot;
           updateProduct.status = req.body.status;
           updateProduct.color = req.body.color;
+          updateProduct.param = req.body.param;
           updateProduct.save();
           try {
             res.status(200).json({

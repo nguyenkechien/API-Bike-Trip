@@ -3,7 +3,7 @@ const promoRoutes = express.Router();
 const auth = require("../middleware/auth.middleware");
 
 // require model promoCodesController
-const promoCodesController = require('../controllers/promoCde.controller');
+const promoCodesController = require('../controllers/promoCode.controller');
 
 // Defined get data(index or listing) route
 

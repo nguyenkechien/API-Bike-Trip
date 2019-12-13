@@ -1,4 +1,7 @@
-const { promoCodesChar, validatePromoCode } = require("../models/promoCode.model");
+const {
+  promoCodesChar,
+  validatePromoCode
+} = require("../models/promoCode.model");
 
 module.exports = {
   getApiPromo: async (req, res, next) => {
@@ -17,7 +20,7 @@ module.exports = {
   },
 
   newPromo: async (req, res, next) => {
-    const { error } = validateContacts(req.body);
+    const { error } = validatePromoCode(req.body);
     if (error) return res.status(401).send(error.details[0].message);
 
     const newPromo = new promoCodesChar(req.body);
@@ -33,13 +36,22 @@ module.exports = {
   },
 
   getIdData: async (req, res, next) => {
-    let id = req.params.id;
-    const findByIdPromo = await promoCodesChar.findById(id, business => {
-      return business
+    // const { error } = validatePromoCode(req.body);
+    // if (error) return res.status(400).send(error.details[0].message);
+
+    let code = req.params.id;
+
+    const findByCodePromo = await promoCodesChar.findOne({
+      codeName: code
     });
 
     try {
-      res.status(200).json(findByIdPromo)
+      if (!findByCodePromo) {
+        return res.status(400).send({
+          message: "Invalid Code."
+        });
+      }
+      res.status(200).json(findByCodePromo);
     } catch (error) {
       res.status(400).send({
         message: `Error ID`

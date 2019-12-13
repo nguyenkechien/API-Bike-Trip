@@ -59,6 +59,7 @@ app.use(
 app.use(bodyParser.json());
 app.use(express.json());
 app.use(express.static(process.env.Domain + "uploads/images"));
+
 // -------------------------------
 app.use("/api/users", usersRoutes);
 app.use("/api/catalog", catalogRoutes);
@@ -67,6 +68,7 @@ app.use("/api/products", productsRoutes);
 app.use("/api/cart", cartsRoutes);
 app.use("/api/promocode", promoRoutes);
 app.use("/api/uploadimage", uploadRoute);
+
 app.get("/images/:img", (req, res, nexr) => {
   const img = req.params.img;
   res.sendFile(path.join(__dirname + `/uploads/images/${img}`));
@@ -74,6 +76,7 @@ app.get("/images/:img", (req, res, nexr) => {
 app.get("*", function (req, res) {
   res.status(404).send('<h1 style="text-align: center; color: red">404 Not found</h1>');
 });
+
 // --------------------------------
 
 const server = http.createServer(app);
