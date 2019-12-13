@@ -68,7 +68,7 @@ const carts = new Schema({
   user: userSchema,
   products: [productsSchema],
   total_money: { type: String },
-  discount_code: { type: String },
+  discount_code: { type: String, default: '0' },
   visaCard: [visaCardSchema],
   order_date: {
     type: Date,
