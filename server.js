@@ -2,7 +2,7 @@
 const express = require("express");
 const app = express();
 const bodyParser = require("body-parser");
-const port = 4000 || process.env.PORT;
+const port = process.env.PORT || 4000;
 const cors = require("cors");
 const mongoose = require("mongoose");
 const configDB = require("./config/connection.js");
@@ -14,7 +14,7 @@ const uploadRoute = require("./db/route/upload.route");
 const cartsRoutes = require("./db/route/carts.route");
 const promoRoutes = require("./db/route/promoCode.route");
 const config = require("config");
-const http = require("http");
+// const https = require("https");
 const path = require('path');
 
 // Domain
@@ -79,8 +79,8 @@ app.get("*", function (req, res) {
 
 // --------------------------------
 
-const server = http.createServer(app);
+// const server = https.createServer(app);
 
-server.listen(port, () => {
+app.listen(port, () => {
   console.log("Server starting on port : " + port)
 });
