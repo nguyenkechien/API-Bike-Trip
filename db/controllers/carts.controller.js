@@ -52,19 +52,12 @@ module.exports = {
   },
 
   updateData: async (req, res, next) => {
-    const { error } = validateCart(req.body);
-    if (error) return res.status(401).send(error.details[0].message);
     let id = req.params.id;
 
     const findByIdCart = await cartsChar.findById(id, (err, updateCart) => {
       if (!updateCart) {
         return res.status(404).send("data is not found");
       } else {
-        updateCart.user = req.body.user;
-        updateCart.products = req.body.products;
-        updateCart.total_money = req.body.total_money;
-        updateCart.discount_code = req.body.discount_code;
-        updateCart.visaCard = req.body.visaCard;
         updateCart.status = req.body.status;
         updateCart.save();
         try {
@@ -93,8 +86,4 @@ module.exports = {
     );
   },
 
-  checkCode: async (req,res,next) => {
-    
-  }
-  
 };
