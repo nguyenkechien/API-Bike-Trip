@@ -18,7 +18,7 @@ const productsSchema = new Schema({
   _id: String,
   name_product: String,
   quantity: Number,
-  price: String,
+  price: Number,
   color: String,
   catalog: String
 });
@@ -87,8 +87,8 @@ const cartsChar = mongoose.model("carts", carts);
 const validateCart = data => {
   const productsSchema = Joi.object().keys({
     name_product: Joi.string(),
-    quantity: Joi.string(),
-    price: Joi.string(),
+    quantity: Joi.Number(),
+    price: Joi.Number(),
     color: Joi.string(),
     catalog: Joi.string()
   });
