@@ -8,7 +8,6 @@ const config   = require("./config");
 
 const path     = require('path');
 const port     = 4000 || process.env.PORT;
-const hostname = config.DOMAIN_API;
 const http     = require("http");
 const https    = require("https");
 let server
@@ -24,7 +23,7 @@ let server
 // });
 
 app.listen(port, () => {
-  console.log(`Server running ${config.NODE_ENV} at ${hostname}`)
+  console.log(`Server running ${config.NODE_ENV} at ${config.DOMAIN_API}`)
 });
 
 console.log(`------------`);
