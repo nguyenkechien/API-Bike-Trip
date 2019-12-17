@@ -13,13 +13,16 @@ const http     = require("http");
 const https    = require("https");
 let server
 
-if (config.NODE_ENV == 'development' || config.NODE_ENV == 'stg') {
-  server = http.createServer(app);
-} else {
-  server = https.createServer(app);
-}
+// if (config.NODE_ENV == 'development' || config.NODE_ENV == 'stg') {
+//   server = http.createServer(app);
+// } else {
+//   server = https.createServer(app);
+// }
 
-server.listen(port, () => {
+// server.listen(port, () => {
+//   console.log(`Server running ${config.NODE_ENV} at ${hostname}`)
+// });
+app.listen(port, () => {
   console.log(`Server running ${config.NODE_ENV} at ${hostname}`)
 });
 
