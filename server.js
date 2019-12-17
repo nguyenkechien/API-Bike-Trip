@@ -1,28 +1,21 @@
-
-const express = require("express");
-const app = express();
+const express    = require("express");
+const app        = express();
 const bodyParser = require("body-parser");
-const port = 4000 || process.env.PORT;
-const cors = require("cors");
+const cors       = require("cors");
+
 const mongoose = require("mongoose");
-const configDB = require("./config/connection.js");
-const productsRoutes = require("./db/route/products.route");
-const usersRoutes = require("./db/route/users.route");
-const catalogRoutes = require("./db/route/catalog.route");
-const contactRoutes = require("./db/route/contact.route");
-const uploadRoute = require("./db/route/upload.route");
-const cartsRoutes = require("./db/route/carts.route");
-const promoRoutes = require("./db/route/promoCode.route");
-const config = require("config");
-const http = require("http");
-const path = require('path');
+const config   = require("./config");
 
-// Domain
-process.env.Domain = __dirname;
-process.env.URL = 'http://ec2-34-216-21-131.us-west-2.compute.amazonaws.com:4000/';
+const http     = require("http");
+const path     = require('path');
+const hostname = '127.0.0.1';
+const port     = 4000 || process.env.PORT;
 
-//use config module to get the privatekey, if no private key set, end the application
-if (!config.get("privatekey")) {
+console.log(`------------`);
+console.log(config.NODE_ENV);
+console.log(`------------`);
+
+if (!config.PRIVATEKEY) {
   console.error("FATAL ERROR: myprivatekey is not defined.");
   process.exit(1);
 }
@@ -31,16 +24,16 @@ if (!config.get("privatekey")) {
 mongoose.Promise = global.Promise;
 
 mongoose.set("useCreateIndex", true);
-// Connect to mongodb
+// Connect to mongoDB
 mongoose
-  .connect(configDB.DB, {
-    useNewUrlParser: true,
+  .connect(config.DB, {
+    useNewUrlParser   : true,
     useUnifiedTopology: true,
-    reconnectTries: 100,
-    reconnectInterval: 500,
-    autoReconnect: true,
-    useFindAndModify: true,
-    dbName: "bike-trip"
+    reconnectTries    : 100,
+    reconnectInterval : 500,
+    autoReconnect     : true,
+    useFindAndModify  : true,
+    dbName            : "bike-trip"
   })
   .then(() => {
     console.log(`Database is connected`);
@@ -58,16 +51,16 @@ app.use(
 );
 app.use(bodyParser.json());
 app.use(express.json());
-app.use(express.static(process.env.Domain + "uploads/images"));
+app.use(express.static(config.DRIVE + "uploads/images"));
 
 // -------------------------------
-app.use("/api/users", usersRoutes);
-app.use("/api/catalog", catalogRoutes);
-app.use("/api/contact", contactRoutes);
-app.use("/api/products", productsRoutes);
-app.use("/api/cart", cartsRoutes);
-app.use("/api/promocode", promoRoutes);
-app.use("/api/uploadimage", uploadRoute);
+app.use("/api/users", require("./app/route/users.route"));
+app.use("/api/catalog", require("./app/route/catalog.route"));
+app.use("/api/contact", require("./app/route/contact.route"));
+app.use("/api/products", require("./app/route/products.route"));
+app.use("/api/cart", require("./app/route/carts.route"));
+app.use("/api/promocode", require("./app/route/promoCode.route"));
+app.use("/api/uploadimage", require("./app/route/upload.route"));
 
 app.get("/images/:img", (req, res, nexr) => {
   const img = req.params.img;
@@ -82,5 +75,5 @@ app.get("*", function (req, res) {
 const server = http.createServer(app);
 
 server.listen(port, () => {
-  console.log("Server starting on port : " + port)
+  console.log(`Server running at http://${hostname}:${port}`)
 });
