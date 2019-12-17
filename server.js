@@ -7,24 +7,23 @@ const mongoose = require("mongoose");
 const config   = require("./config");
 
 const path     = require('path');
-const port     = 4000 || process.env.PORT;
 const http     = require("http");
 const https    = require("https");
 let server
 
-// if (config.NODE_ENV == 'development' || config.NODE_ENV == 'stg') {
-//   server = http.createServer(app);
-// } else {
-//   server = https.createServer(app);
-// }
+if (config.NODE_ENV == 'development' || config.NODE_ENV == 'stg') {
+  server = http.createServer(app);
+} else {
+  server = https.createServer(app);
+}
 
-// server.listen(port, () => {
-//   console.log(`Server running ${config.NODE_ENV} at ${hostname}`)
-// });
-
-app.listen(config.PORT, () => {
-  console.log(`Server running ${config.NODE_ENV} at ${config.DOMAIN_API}`)
+server.listen(config.PORT, () => {
+  console.log(`Server running ${config.NODE_ENV} at ${hostname}`)
 });
+
+// app.listen(config.PORT, () => {
+//   console.log(`Server running ${config.NODE_ENV} at ${config.DOMAIN_API}`)
+// });
 
 console.log(`------------`);
 console.log(config.NODE_ENV);
