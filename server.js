@@ -2,22 +2,13 @@ const express    = require("express");
 const app        = express();
 const bodyParser = require("body-parser");
 const cors       = require("cors");
+const path       = require('path');
 
 const mongoose = require("mongoose");
 const config   = require("./config");
 
-const path     = require('path');
-const http     = require("http");
-const https    = require("https");
-let server
 
-if (config.NODE_ENV == 'development' || config.NODE_ENV == 'stg') {
-  server = http.createServer(app);
-} else {
-  server = https.createServer(app);
-}
-
-server.listen(config.PORT, () => {
+app.listen(config.PORT, () => {
   console.log(`Server running ${config.NODE_ENV} at ${config.DOMAIN_API}`)
 });
 
