@@ -6,10 +6,31 @@ const cors       = require("cors");
 const mongoose = require("mongoose");
 const config   = require("./config");
 
-const http     = require("http");
-const path     = require('path');
-const hostname = '127.0.0.1';
-const port     = 4000 || process.env.PORT;
+const path = require('path');
+const port = 4000 || process.env.PORT;
+let server, http, hostname, https
+
+
+
+if (config.NODE_ENV == 'development' || config.NODE_ENV == 'stg') {
+  http     = require("http");
+  hostname = '127.0.0.1';
+  server   = http.createServer(app);
+} else {
+  https    = require("https");
+  hostname = config.DOMAIN_API;
+  server   = https.createServer(app);
+}
+
+server.listen(port, () => {
+
+  if (config.NODE_ENV == 'development' || config.NODE_ENV == 'stg') {
+    console.log(`Server running ${config.NODE_ENV} at http://${hostname}:${port}`)
+  } else {
+    console.log(`Server running ${config.NODE_ENV} at https://${hostname}`)
+  }
+  
+});
 
 console.log(`------------`);
 console.log(config.NODE_ENV);
@@ -71,9 +92,3 @@ app.get("*", function (req, res) {
 });
 
 // --------------------------------
-
-const server = http.createServer(app);
-
-server.listen(port, () => {
-  console.log(`Server running at http://${hostname}:${port}`)
-});
