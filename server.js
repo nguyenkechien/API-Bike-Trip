@@ -18,12 +18,8 @@ if (config.NODE_ENV == 'development' || config.NODE_ENV == 'stg') {
 }
 
 server.listen(config.PORT, () => {
-  console.log(`Server running ${config.NODE_ENV} at ${hostname}`)
+  console.log(`Server running ${config.NODE_ENV} at ${config.DOMAIN_API}`)
 });
-
-// app.listen(config.PORT, () => {
-//   console.log(`Server running ${config.NODE_ENV} at ${config.DOMAIN_API}`)
-// });
 
 console.log(`------------`);
 console.log(config.NODE_ENV);
