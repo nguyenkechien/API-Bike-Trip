@@ -22,7 +22,7 @@ let server
 //   console.log(`Server running ${config.NODE_ENV} at ${hostname}`)
 // });
 
-app.listen(port, () => {
+app.listen(config.PORT, () => {
   console.log(`Server running ${config.NODE_ENV} at ${config.DOMAIN_API}`)
 });
 
