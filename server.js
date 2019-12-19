@@ -4,7 +4,7 @@ const bodyParser = require("body-parser");
 const cors       = require("cors");
 const path       = require('path');
 
-const mongoose = require("mongoose");
+const connectDB = require("./Db/connection");
 const config   = require("./config");
 
 
@@ -21,28 +21,7 @@ if (!config.PRIVATEKEY) {
   process.exit(1);
 }
 
-// ES6 Promises
-mongoose.Promise = global.Promise;
-
-mongoose.set("useCreateIndex", true);
-// Connect to mongoDB
-mongoose
-  .connect(config.DB, {
-    useNewUrlParser   : true,
-    useUnifiedTopology: true,
-    reconnectTries    : 100,
-    reconnectInterval : 500,
-    autoReconnect     : true,
-    useFindAndModify  : true,
-    dbName            : "bike-trip"
-  })
-  .then(() => {
-    console.log(`Database is connected`);
-  })
-  .catch(err => {
-    console.log(err);
-  });
-
+connectDB();
 app.use(cors());
 
 app.use(
@@ -55,13 +34,13 @@ app.use(express.json());
 app.use(express.static(config.DRIVE + "uploads/images"));
 
 // -------------------------------
-app.use("/api/users", require("./app/route/users.route"));
-app.use("/api/catalog", require("./app/route/catalog.route"));
-app.use("/api/contact", require("./app/route/contact.route"));
-app.use("/api/products", require("./app/route/products.route"));
-app.use("/api/cart", require("./app/route/carts.route"));
-app.use("/api/promocode", require("./app/route/promoCode.route"));
-app.use("/api/uploadimage", require("./app/route/upload.route"));
+app.use("/api/users", require("./app/router/users.route"));
+app.use("/api/catalog", require("./app/router/catalog.route"));
+app.use("/api/contact", require("./app/router/contact.route"));
+app.use("/api/products", require("./app/router/products.route"));
+app.use("/api/cart", require("./app/router/carts.route"));
+app.use("/api/promocode", require("./app/router/promoCode.route"));
+app.use("/api/uploadimage", require("./app/router/upload.route"));
 
 app.get("/images/:img", (req, res, nexr) => {
   const img = req.params.img;
