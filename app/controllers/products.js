@@ -1,4 +1,5 @@
-const { productsChar, validateProducts } = require("../models/products.model");
+const productsChar     = require("../models/products");
+const validateProducts = require('../validation/validateProd');
 
 module.exports = {
   getProducts: async (req, res, next) => {
@@ -7,12 +8,15 @@ module.exports = {
     });
 
     try {
-      res.status(200).json(findProducts);
+      res.status(200).send({
+        message: 'Connect API Success',
+        data   : findProducts
+      });
     } catch (error) {
       res.status(400).send({
         message: `Can't get API`
       });
-      console.log(`Can't get API : ${error}`);
+      console.log(`Can't get API : ${error.message}`);
     }
   },
 
@@ -20,29 +24,40 @@ module.exports = {
     const { error } = validateProducts(req.body);
 
     if (error) {
-      return res.status(401).send(error.details[0].message);
+      return res.status(401).send({
+        message: error.details[0].message
+      });
     }
 
     const newProduct     = new productsChar(req.body);
     let   newProductSave = await newProduct.save();
 
     try {
-      res.status(200).send(newProductSave);
-      console.log(newProductSave);
+      res.status(200).send({
+        message: 'Save to database success',
+        data   : newProductSave
+      });
     } catch (error) {
-      res.status(400).send("unable to save to database");
+      res.status(400).send({
+        message: 'unable to save to database'
+      });
       console.log(error);
     }
   },
 
   getIdData: async (req, res, next) => {
-    let   id              = req.params.id;
+
+    let id = req.params.id;
+
     const findByIdProduct = await productsChar.findById(id, business => {
       return business;
     });
 
     try {
-      res.status(200).json(findByIdProduct);
+      res.status(200).send({
+        message: 'Get data success',
+        data   : findByIdProduct
+      });
     } catch (error) {
       res.status(400).send({
         message: `Error ID`
@@ -53,13 +68,22 @@ module.exports = {
 
   updateData: async (req, res, next) => {
     const { error } = validateProducts(req.body);
-    if (error) return res.status(401).send(error.details[0].message);
-    let   id              = req.params.id;
+
+    if (error) {
+      return res.status(401).send({
+        message: error.details[0].message
+      });
+    }
+
+    let id = req.params.id;
+
     const findByIdProduct = await productsChar.findById(
       id,
       (err, updateProduct) => {
         if (!updateProduct) {
-          return res.status(404).send("data is not found");
+          return res.status(404).send({
+            message: "data is not found"
+          });
         } else {
           updateProduct.name       = req.body.name;
           updateProduct.price      = req.body.price;
@@ -75,12 +99,14 @@ module.exports = {
           updateProduct.param      = req.body.param;
           updateProduct.save();
           try {
-            res.status(200).json({
-              message : "update complate",
+            res.status(200).send({
+              message : "Update to database success",
               business: updateProduct
             });
           } catch (error) {
-            res.status(404).send("data is not found");
+            res.status(404).send({
+              message: "data is not found"
+            });
             console.log(error);
           }
           return updateProduct;
@@ -94,9 +120,11 @@ module.exports = {
       {
         _id: req.params.id
       },
-      function(err, person) {
-        if (err) res.json(err);
-        else res.json("Successfully removed");
+      function (err, person) {
+        if (err) res.send(err);
+        else res.send({
+          message: "Successfully removed"
+        });
       }
     );
   }

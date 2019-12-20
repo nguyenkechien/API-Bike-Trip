@@ -3,7 +3,7 @@ const contactRoutes = express.Router();
 const auth          = require("../middleware/auth.middleware");
 
 // require model contactController
-const contactController = require('../controllers/contact.controller');
+const contactController = require('../controllers/contact');
 
 // Defined get data(index or listing) route
 

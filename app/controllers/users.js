@@ -1,38 +1,63 @@
+const usersChar = require("../models/user");
+const bcrypt    = require("bcrypt");
 const {
-  usersChar,
-  validateUser,
-  validateLoginUser
-} = require("../models/user.model");
-const bcrypt = require("bcrypt");
-
+  validateUserRegistration,
+  validateUserLogin
+} = require('./../validation/validateUsers')
 
 module.exports = {
-  getApiUsers: (req, res, next) => {
+  getApiUsers: async (req, res, next) => {
+    const findUsers = await usersChar.find(users => {
+      return users;
+    });
+
     if (req.user.isAdmin) {
-      usersChar.find((err, users) => {
-        if (err) {
-          console.log(`Can't get API : ${err}`);
-        } else {
-          res.json(users);
-        }
-      });
     }
+
+    try {
+      if (req.user.isAdmin) {
+        res.status(200).send({
+          message: 'Connect API Success',
+          data   : findUsers
+        });
+      } else {
+        res.status(404).send({
+          message: 'You are not the administrator',
+        });
+      }
+    } catch (error) {
+      res.status(400).send({
+        message: `Can't get API`
+      });
+      console.log(`Can't get API : ${error.message}`);
+    }
+
   },
 
   newUsers: async (req, res, next) => {
     // ckeck validate
-    const { error } = validateUser(req.body);
-    if (error) return res.status(401).send(error.details[0].message);
+    const { error } = validateUserRegistration(req.body);
+
+    if (error) {
+      return res.status(401).send({
+        message: error.details[0].message
+      });
+    }
 
     let emailExist = await usersChar.findOne({
       email: req.body.email
     });
 
-    if (emailExist) return res.status(401).send("User already registered.");
+    if (emailExist) {
+      return res.status(401).send({
+        message: "User already registered."
+      });
+    }
 
     const newUser = new usersChar(req.body);
     // hash password
     newUser.password = await bcrypt.hashSync(newUser.password, 1);
+
     try {
       const user = await newUser.save();
 
@@ -49,16 +74,20 @@ module.exports = {
       });
     } catch (error) {
       console.log(error);
-      res.status(401).send(error);
+      res.status(400).send({
+        message: 'unable to save to database'
+      });
     }
   },
 
   LoginUser: async (req, res, next) => {
     // ckeck validate
-    const { error } = validateLoginUser(req.body);
+    const { error } = validateUserLogin(req.body);
+
     if (error) {
-      console.log(error);
-      return res.status(400).send(error.details[0].message);
+      return res.status(401).send({
+        message: error.details[0].message
+      });
     }
 
     let user = await usersChar.findOne({
@@ -66,7 +95,7 @@ module.exports = {
     });
 
     if (!user) {
-      return res.status(400).send({
+      return res.status(404).send({
         message: "User Name is wrong."
       });
     }
@@ -75,8 +104,9 @@ module.exports = {
       req.body.password,
       user.password
     );
+
     if (!validPassword) {
-      return res.status(400).send({
+      return res.status(404).send({
         message: "Invalid password."
       });
     }
@@ -116,7 +146,10 @@ module.exports = {
     });
 
     try {
-      res.status(200).json(findByIdUser);
+      res.status(200).send({
+        message: 'Get data success',
+        data   : findByIdUser
+      });
     } catch (error) {
       res.status(400).send({
         message: `Error ID`
@@ -126,9 +159,16 @@ module.exports = {
   },
 
   updateData: async (req, res, next) => {
-    const { error } = validateUser(req.body);
-    if (error) return res.status(401).send(error.details[0].message);
-    let   id           = req.params.id;
+    const { error } = validateUserRegistration(req.body);
+
+    if (error) {
+      return res.status(401).send({
+        message: error.details[0].message
+      });
+    }
+
+    let id = req.params.id;
+
     const findByIdUser = await usersChar.findById(
       id,
       (err, updateUser) => {
@@ -145,19 +185,22 @@ module.exports = {
           updateUser.phone     = req.body.phone;
           updateUser.status    = req.body.status;
           updateUser.isAdmin   = req.body.isAdmin;
-          
+
           updateUser.password = bcrypt.hashSync(updateUser.password, 1);
-  
+
           updateUser.save();
 
           try {
-            console.log(updateUser);
-            res.status(200).json({
+
+            res.status(200).send({
               message : "update complate",
               business: updateUser
             });
+
           } catch (error) {
-            res.status(404).send("data is not found");
+            res.status(404).send({
+              message: "data is not found"
+            });
             console.log(error);
           }
           return updateUser;
@@ -171,9 +214,9 @@ module.exports = {
       {
         _id: req.params.id
       },
-      function(err, person) {
-        if (err) res.json(err);
-        else res.json("Successfully removed");
+      function (err, person) {
+        if (err) res.send(err);
+        else res.send("Successfully removed");
       }
     );
   }

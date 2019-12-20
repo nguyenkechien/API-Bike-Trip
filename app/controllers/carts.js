@@ -1,4 +1,5 @@
-const { cartsChar, validateCart } = require("../models/carts.model");
+const cartsChar    = require("../models/carts");
+const validateCart = require("../validation/validateCart");
 
 module.exports = {
   getCarts: async (req, res, next) => {
@@ -7,12 +8,15 @@ module.exports = {
     });
 
     try {
-      res.status(200).json(findCarts);
+      res.status(200).send({
+        message: 'Connect API Success',
+        data   : findCarts
+      });
     } catch (error) {
       res.status(400).send({
         message: `Can't get API`
       });
-      console.log(`Can't get API : ${error}`);
+      console.log(`Can't get API : ${error.message}`);
     }
   },
 
@@ -20,17 +24,24 @@ module.exports = {
     const { error } = validateCart(req.body);
 
     if (error) {
-      return res.status(401).send(error.details[0].message);
+      return res.status(401).send({
+        message: error.details[0].message
+      });
     }
 
     const newCart     = new cartsChar(req.body);
     let   newCartSave = await newCart.save();
 
     try {
-      res.status(200).send(newCartSave);
+      res.status(200).send({
+        message: 'Save to database success',
+        data   : newCartSave
+      });
       console.log(newCartSave);
     } catch (error) {
-      res.status(400).send("unable to save to database");
+      res.status(400).send({
+        message: 'unable to save to database'
+      });
       console.log(error);
     }
   },
@@ -42,7 +53,10 @@ module.exports = {
     });
 
     try {
-      res.status(200).json(findByIdCart);
+      res.status(200).send({
+        message: 'Get data success',
+        data   : findByIdCart
+      });
     } catch (error) {
       res.status(400).send({
         message: `Error ID`
@@ -61,12 +75,14 @@ module.exports = {
         updateCart.status = req.body.status;
         updateCart.save();
         try {
-          res.status(200).json({
+          res.status(200).send({
             message : "update complate",
             business: updateCart
           });
         } catch (error) {
-          res.status(404).send("data is not found");
+          res.status(404).send({
+            message: "data is not found"
+          });
           console.log(error);
         }
         return updateCart;
@@ -79,9 +95,11 @@ module.exports = {
       {
         _id: req.params.id
       },
-      function(err, person) {
-        if (err) res.json(err);
-        else res.json("Successfully removed");
+      function (err, person) {
+        if (err) res.send(err);
+        else res.send({
+          message: "Successfully removed"
+        });
       }
     );
   },

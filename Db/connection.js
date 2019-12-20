@@ -13,7 +13,7 @@ const connectDB = async () => {
       reconnectInterval : 500,
       autoReconnect     : true,
       useFindAndModify  : true,
-      dbName            : "bike-trip"
+      dbName            : "bike-trip-2"
     });
 
     console.log('Database is connected....');

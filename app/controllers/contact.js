@@ -1,4 +1,6 @@
-const { contactsChar, validateContacts } = require("../models/contact.model");
+const contactsChar     = require("../models/contact");
+const validateContacts = require("../validation/validateContacts");
+
 
 module.exports = {
   getApiContact: async (req, res, next) => {
@@ -7,7 +9,10 @@ module.exports = {
     });
 
     try {
-      res.status(200).json(findContact);
+      res.status(200).send({
+        message: 'Connect API Success',
+        data   : findContact
+      });
     } catch (error) {
       res.status(400).send({
         message: `Can't get API`
@@ -18,28 +23,42 @@ module.exports = {
 
   newContact: async (req, res, next) => {
     const { error } = validateContacts(req.body);
-    if (error) return res.status(401).send(error.details[0].message);
 
-    const newContact = new contactsChar(req.body);
-    let newContactSave = await newContact.save();
+    if (error) {
+      return res.status(401).send({
+        message: error.details[0].message
+      });
+    }
+
+    const newContact     = new contactsChar(req.body);
+    let   newContactSave = await newContact.save();
 
     try {
-      res.status(200).send(newContactSave);
+      res.status(200).send({
+        message: 'Save to database success',
+        data   : newContactSave
+      });
       console.log(newContactSave);
     } catch (error) {
-      res.status(400).send("unable to save to database");
+      res.status(400).send({
+        message: 'unable to save to database'
+      });
       console.log(error);
     }
   },
 
   getIdData: async (req, res, next) => {
     let id = req.params.id;
+    
     const findByIdContact = await contactsChar.findById(id, business => {
       return business
     });
 
     try {
-      res.status(200).json(findByIdContact)
+      res.status(200).send({
+        message: 'Get data success',
+        data   : findByIdContact
+      });
     } catch (error) {
       res.status(400).send({
         message: `Error ID`
@@ -53,9 +72,11 @@ module.exports = {
       {
         _id: req.params.id
       },
-      function(err, person) {
-        if (err) res.json(err);
-        else res.json("Successfully removed");
+      function (err, person) {
+        if (err) res.send(err);
+        else res.send({
+          message: "Successfully removed"
+        });
       }
     );
   }

@@ -3,7 +3,7 @@ const usersRoutes = express.Router();
 const auth        = require("../middleware/auth.middleware");
 
 // require model usersController
-const usersController = require('../controllers/users.controller');
+const usersController = require('../controllers/users');
 
 // Defined get data(index or listing) route
 

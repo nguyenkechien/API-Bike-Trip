@@ -1,7 +1,5 @@
-const {
-  promoCodesChar,
-  validatePromoCode
-} = require("../models/promoCode.model");
+const promoCodesChar    = require("../models/promoCode");
+const validatePromoCode = require('../validation/validatePromo')
 
 module.exports = {
   getApiPromo: async (req, res, next) => {
@@ -10,7 +8,10 @@ module.exports = {
     });
 
     try {
-      res.status(200).json(findPromos);
+      res.status(200).send({
+        message: 'Connect API Success',
+        data   : findPromos
+      });
     } catch (error) {
       res.status(400).send({
         message: `Can't get API`
@@ -21,23 +22,31 @@ module.exports = {
 
   newPromo: async (req, res, next) => {
     const { error } = validatePromoCode(req.body);
-    if (error) return res.status(401).send(error.details[0].message);
+
+    if (error) {
+      return res.status(401).send({
+        message: error.details[0].message
+      });
+    }
 
     const newPromo     = new promoCodesChar(req.body);
     let   newPromoSave = await newPromo.save();
 
     try {
-      res.status(200).send(newPromoSave);
+      res.status(200).send({
+        message: 'Save to database success',
+        data   : newPromoSave
+      });
       console.log(newPromoSave);
     } catch (error) {
-      res.status(400).send("unable to save to database");
+      res.status(400).send({
+        message: 'unable to save to database'
+      });
       console.log(error);
     }
   },
 
   getIdData: async (req, res, next) => {
-    // const { error } = validatePromoCode(req.body);
-    // if (error) return res.status(400).send(error.details[0].message);
 
     let code = req.params.id;
 
@@ -51,7 +60,10 @@ module.exports = {
           message: "Invalid Code."
         });
       }
-      res.status(200).json(findByCodePromo);
+      res.status(200).send({
+        message : "Success Promo",
+        business: findByCodePromo
+      });
     } catch (error) {
       res.status(400).send({
         message: `Error ID`
@@ -65,9 +77,11 @@ module.exports = {
       {
         _id: req.params.id
       },
-      function(err, person) {
-        if (err) res.json(err);
-        else res.json("Successfully removed");
+      function (err, person) {
+        if (err) res.send(err);
+        else res.send({
+          message: "Successfully removed"
+        });
       }
     );
   }

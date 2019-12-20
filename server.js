@@ -4,7 +4,7 @@ const bodyParser = require("body-parser");
 const cors       = require("cors");
 const path       = require('path');
 
-const connectDB = require("./Db/connection");
+const connectDB = require("./db/connection");
 const config   = require("./config");
 
 
@@ -34,13 +34,13 @@ app.use(express.json());
 app.use(express.static(config.DRIVE + "uploads/images"));
 
 // -------------------------------
-app.use("/api/users", require("./app/router/users.route"));
-app.use("/api/catalog", require("./app/router/catalog.route"));
-app.use("/api/contact", require("./app/router/contact.route"));
-app.use("/api/products", require("./app/router/products.route"));
-app.use("/api/cart", require("./app/router/carts.route"));
-app.use("/api/promocode", require("./app/router/promoCode.route"));
-app.use("/api/uploadimage", require("./app/router/upload.route"));
+app.use("/api/users", require("./app/router/users"));
+app.use("/api/catalog", require("./app/router/catalog"));
+app.use("/api/contact", require("./app/router/contact"));
+app.use("/api/products", require("./app/router/products"));
+app.use("/api/cart", require("./app/router/carts"));
+app.use("/api/promocode", require("./app/router/promoCode"));
+app.use("/api/uploadimage", require("./app/router/upload"));
 
 app.get("/images/:img", (req, res, nexr) => {
   const img = req.params.img;

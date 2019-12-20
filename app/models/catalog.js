@@ -1,6 +1,5 @@
 const mongoose = require("mongoose");
 const Schema   = mongoose.Schema;
-const Joi      = require("joi");
 
 // Creat Schame anh model
 
@@ -17,21 +16,7 @@ const catalogs = new Schema({
   }
 });
 
-const validateCatalog = data => {
-  const schema = {
-    nameCatalog: Joi.string()
-      .required()
-      .min(2)
-      .max(255),
-    descriptionCatalog: Joi.string()
-  };
-
-  return Joi.validate(data, schema);
-};
 
 const catalogChar = mongoose.model("catalogs", catalogs);
 
-module.exports = {
-  catalogChar,
-  validateCatalog
-};
+module.exports = catalogChar;

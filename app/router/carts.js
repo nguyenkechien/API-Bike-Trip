@@ -3,7 +3,7 @@ const cartsRoutes = express.Router();
 const auth        = require("../middleware/auth.middleware");
 
 // require model cartsController
-const cartsController = require('../controllers/carts.controller');
+const cartsController = require('../controllers/carts');
 
 // Defined get data(index or listing) route
 

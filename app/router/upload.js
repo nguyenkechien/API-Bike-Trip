@@ -2,7 +2,7 @@ const express     = require("express");
 const uploadRoute = express.Router();
 const auth        = require("../middleware/auth.middleware");
 
-const uploadController = require("../controllers/upload.controoller");
+const uploadController = require("../controllers/upload");
 
 // Defined get data(index or listing) route
 uploadRoute.route("/").get(uploadController.getImages);
@@ -10,16 +10,16 @@ uploadRoute.route("/").get(uploadController.getImages);
 // Defined Store route
 uploadRoute
   .route("/content/save")
-  .post(auth, uploadController.newImage);
+  .post(uploadController.newImage);
 
   // Defined Store route
 uploadRoute
   .route("/content/save/gallerys")
-  .post(auth, uploadController.newGallerys);
+  .post(uploadController.newGallerys);
  
 // Defined Store route
 uploadRoute
   .route("/content/delete/:id")
-  .get(auth, uploadController.deleteData);
+  .get(uploadController.deleteData);
 
 module.exports = uploadRoute;

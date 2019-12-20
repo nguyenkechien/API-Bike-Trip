@@ -1,13 +1,13 @@
 const mongoose = require("mongoose");
 const Schema   = mongoose.Schema;
 const jwt      = require("jsonwebtoken");
-const Joi      = require("joi");
 const config   = require("../../config");
 // Creat Schame anh model
 
 const users = new Schema({
   fullname: {
-    type: String
+    type   : String,
+    default: ''
   },
   user_name: {
     type     : String,
@@ -32,13 +32,15 @@ const users = new Schema({
   avatar: {
     type     : String,
     minlength: 1,
-    maxlength: 255
+    maxlength: 255,
+    default  : ''
   },
   address: {
     type     : String,
     required : true,
     minlength: 1,
-    maxlength: 255
+    maxlength: 255,
+    default  : ''
   },
   location: {
     type: String
@@ -47,7 +49,8 @@ const users = new Schema({
     type     : String,
     minlength: 6,
     maxlength: 11,
-    unique   : true
+    unique   : true,
+    default  : ''
   },
   date: {
     type   : Date,
@@ -55,9 +58,13 @@ const users = new Schema({
   },
   isAdmin: {
     type    : Boolean,
-    required: true
+    required: true,
+    default : false
   },
-  status: Boolean
+  status: {
+    type   : Boolean,
+    default: false
+  },
 });
 
 users.methods.generateAuthToken = function () {
@@ -76,54 +83,4 @@ users.methods.generateAuthToken = function () {
 };
 const usersChar = mongoose.model("users", users);
 
-//function to validate user
-function validateUser(user) {
-  const schema = {
-    fullname : Joi.string(),
-    user_name: Joi.string()
-      .min(3)
-      .max(50)
-      .required(),
-    password: Joi.string()
-      .min(3)
-      .max(255)
-      .required(),
-    email: Joi.string()
-      .min(5)
-      .max(255)
-      .required()
-      .email(),
-    phone: Joi.string()
-      .min(6)
-      .max(11)
-      .required(),
-    avatar  : Joi.string(),
-    address : Joi.string(),
-    location: Joi.string(),
-    isAdmin : Joi.boolean().required(),
-    status  : Joi.boolean()
-  };
-
-  return Joi.validate(user, schema);
-}
-
-function validateLoginUser(user) {
-  const schema = {
-    user_name: Joi.string()
-      .min(3)
-      .max(50)
-      .required(),
-    password: Joi.string()
-      .min(3)
-      .max(255)
-      .required()
-  };
-
-  return Joi.validate(user, schema);
-}
-
-module.exports = {
-  usersChar,
-  validateUser,
-  validateLoginUser
-};
+module.exports = usersChar;

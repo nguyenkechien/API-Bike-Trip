@@ -1,6 +1,5 @@
 const mongoose = require("mongoose");
 const Schema   = mongoose.Schema;
-const Joi      = require("joi");
 
 // Creat Schame anh model
 const promoCode = new Schema({
@@ -16,25 +15,12 @@ const promoCode = new Schema({
   },
   percentOff: {
     type   : Number,
-    default: 10
+    default: 0
   }
 });
 
 const promoCodesChar = mongoose.model("promoCode", promoCode);
 
-const validatePromoCode = data => {
-  const schema = {
-    codeName: Joi.string()
-      .min(1)
-      .max(255),
-    expirationDate: Joi.string().required(),
-    percentOff    : Joi.string()
-  };
 
-  return Joi.validate(data, schema);
-};
 
-module.exports = {
-  promoCodesChar,
-  validatePromoCode
-};
+module.exports = promoCodesChar;
