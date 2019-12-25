@@ -15,7 +15,6 @@ const cartType = {
 };
 
 const productsSchema = new Schema({
-  _id: String,
   name_product: String,
   quantity: Number,
   price: String,
@@ -24,7 +23,6 @@ const productsSchema = new Schema({
 });
 
 const userSchema = new Schema({
-  _id: String,
   user_name: {
     type: String,
     required: true,
@@ -54,7 +52,6 @@ const userSchema = new Schema({
 });
 
 const visaCardSchema = new Schema({
-  _id: String,
   cvv: String,
   name_on_card: String,
   card_number: String,
