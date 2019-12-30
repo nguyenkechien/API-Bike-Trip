@@ -5,7 +5,7 @@ const cors       = require("cors");
 const path       = require('path');
 
 const connectDB = require("./Db/connection");
-const config   = require("./config");
+const config    = require("./config");
 
 
 app.listen(config.PORT, () => {
@@ -41,6 +41,7 @@ app.use("/api/products", require("./app/router/products.route"));
 app.use("/api/cart", require("./app/router/carts.route"));
 app.use("/api/promocode", require("./app/router/promoCode.route"));
 app.use("/api/uploadimage", require("./app/router/upload.route"));
+app.use("/api/gallery", require("./app/router/gallery.route"));
 
 app.get("/images/:img", (req, res, nexr) => {
   const img = req.params.img;
