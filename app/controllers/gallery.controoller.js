@@ -21,7 +21,7 @@ module.exports = {
   newGallerys: async (req, res, next) => {
     const storage = multer.diskStorage({
       destination: function(req, file, cb) {
-        cb(null, config.DRIVE + "/uploads/gallery");
+        cb(null, config.DRIVE + "/uploads/images");
       },
 
       filename: function(req, file, cb) {
@@ -32,12 +32,12 @@ module.exports = {
     const Upload = multer({
       storage: storage,
       limits : { fileSize: 1000000 }
-    }).array("files");
+    }).array("gallery");
 
     Upload(req, res, async function(err) {
       if (err instanceof multer.MulterError) {
-        console.log(err);
-        return res.status(500).json(err);
+        console.log(`501${err}`);
+        return res.status(501).json(err);
       } else if (err) {
         console.log(err);
         return res.status(500).json(err);
@@ -46,9 +46,9 @@ module.exports = {
       for (let i = 0; i < req.files.length; i++) {
         const element = req.files[i];
         let   newImg  = {
-          nameImage: element.filename,
-          altImage : element.originalname,
-          urlImage : config.DOMAIN_API + "gallery/" + element.filename
+          nameFile: element.filename,
+          altFile : element.originalname,
+          urlFile : config.DOMAIN_API + "images/" + element.filename
         };
         const newImage     = new galleryChar(newImg);
         let   newImageSave = await newImage.save();
