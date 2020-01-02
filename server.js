@@ -46,7 +46,7 @@ app.get("/images/:img", (req, res, nexr) => {
   const img = req.params.img;
   res.sendFile(path.join(__dirname + `/uploads/images/${img}`));
 })
-app.get("*", function (req, res) {
+app.get("*", (req, res) => {
   res.status(404).send('<h1 style="text-align: center; color: red">404 Not found</h1>');
 });
 

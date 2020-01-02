@@ -1,11 +1,11 @@
 const Joi = require("joi");
 
 const cartType = {
-  user: {},
-  products: [],
+  user: Object,
+  products: Array,
   total_money: Number,
   discount_code: String,
-  visaCard: {},
+  visaCard: Object,
   order_date: Date,
   status: Boolean
 }
