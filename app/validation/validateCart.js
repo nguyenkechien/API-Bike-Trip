@@ -24,7 +24,7 @@ const validateCart = data => {
   });
 
   const schema = {
-    user         : Joi.object(),
+    user         : Joi.string(),
     products     : Joi.array(),
     total_money  : Joi.number(),
     discount_code: Joi.string(),

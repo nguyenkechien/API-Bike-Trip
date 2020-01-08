@@ -17,6 +17,10 @@ const contacts = new Schema({
   content: {
     type   : String,
     default: null
+  },
+  days_added: {
+    type: Date,
+    default: Date.now
   }
 });
 

@@ -16,6 +16,14 @@ const promoCode = new Schema({
   percentOff: {
     type   : Number,
     default: 0
+  },
+  number_of_entries: {
+    type: Number,
+    default: 0
+  },
+  days_added: {
+    type: Date,
+    default: Date.now
   }
 });
 

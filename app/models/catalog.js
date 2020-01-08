@@ -13,6 +13,10 @@ const catalogs = new Schema({
   },
   descriptionCatalog: {
     type: String
+  },
+  days_added: {
+    type: Date,
+    default: Date.now
   }
 });
 

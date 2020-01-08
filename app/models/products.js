@@ -100,7 +100,11 @@ const products = new Schema({
     type: String,
     required: true
   },
-  param: specificationsSchema
+  param: specificationsSchema,
+  days_added: {
+    type: Date,
+    default: Date.now
+  }
 });
 
 const productsChar = mongoose.model("products", products);
