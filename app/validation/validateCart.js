@@ -1,13 +1,13 @@
 const Joi = require("joi");
 
 const cartType = {
-  user: Object,
-  products: Array,
-  total_money: Number,
+  user         : Object,
+  products     : Array,
+  total_money  : Number,
   discount_code: String,
-  visaCard: Object,
-  order_date: Date,
-  status: Boolean
+  visaCard     : Object,
+  order_date   : Date,
+  status       : Boolean
 }
 
 /**
@@ -24,12 +24,13 @@ const validateCart = data => {
   });
 
   const schema = {
-    user         : Joi.string(),
-    products     : Joi.array(),
-    total_money  : Joi.number(),
-    discount_code: Joi.string(),
-    visaCard     : visaCardSchema,
-    status       : Joi.boolean().required()
+    user            : Joi.string(),
+    products        : Joi.array(),
+    total_money     : Joi.number(),
+    discount_code   : Joi.string(),
+    visaCard        : visaCardSchema,
+    status          : Joi.boolean().required(),
+    delivery_address: Joi.object(),
   };
 
   return Joi.validate(data, schema);

@@ -22,10 +22,21 @@ const carts = new Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref : 'products'
   }],
-  total_money  : { type: Number, required: true, default: 0 },
-  discount_code: { type: String, default: '' },
-  visaCard     : visaCardSchema,
-  order_date   : {
+  total_money     : { type: Number, required: true, default: 0 },
+  discount_code   : { type: String, default: '' },
+  delivery_address: {
+    address: {
+      type: String, default: '', required: true
+    },
+    city: {
+      type: String, default: '', required: true
+    },
+    state: {
+      type: String, default: '', required: true
+    },
+  },
+  visaCard  : visaCardSchema,
+  order_date: {
     type   : Date,
     default: Date.now
   },
