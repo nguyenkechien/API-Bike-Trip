@@ -31,7 +31,7 @@ const validateProducts = data => {
     param     : specificationsSchema
   };
 
-  return Joi.validate(data, schema);
+  return Joi.validate(data, schema, { abortEarly: false });
 };
 
 module.exports = validateProducts;

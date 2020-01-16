@@ -24,8 +24,13 @@ module.exports = {
     const { error } = validatePromoCode(req.body);
 
     if (error) {
+      let messages = [];
+      for (let i = 0; i < error.details.length; i++) {
+        const item = error.details[i];
+        messages.push(item.message)
+      }
       return res.status(401).send({
-        message: error.details[0].message
+        message: messages
       });
     }
 

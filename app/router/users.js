@@ -1,6 +1,6 @@
-const express     = require('express');
+const express = require('express');
 const usersRoutes = express.Router();
-const auth        = require("../middleware/auth.middleware");
+const auth = require("../middleware/auth.middleware");
 
 // require model usersController
 const usersController = require('../controllers/users');
@@ -19,9 +19,9 @@ usersRoutes.route('/login').post(usersController.LoginUser);
 usersRoutes.route('/content/:id').get(usersController.getIdData);
 
 //  Defined update route post
-usersRoutes.route('/content/update/:id').post(auth,usersController.updateData)
+usersRoutes.route('/content/update/:id').post(usersController.updateData)
 
 // Defined delete route
-usersRoutes.route('/content/delete/:id').get(auth,usersController.deleteData);
+usersRoutes.route('/content/delete/:id').get(auth, usersController.deleteData);
 
 module.exports = usersRoutes;

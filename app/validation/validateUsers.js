@@ -3,7 +3,7 @@ const Joi = require("joi");
 //function to validate user
 function validateUserRegistration(user) {
   const schema = {
-    fullname : Joi.string(),
+    fullname: Joi.string(),
     user_name: Joi.string()
       .min(3)
       .max(50)
@@ -21,14 +21,14 @@ function validateUserRegistration(user) {
       .min(6)
       .max(11)
       .required(),
-    avatar  : Joi.string(),
-    address : Joi.string(),
+    avatar: Joi.string(),
+    address: Joi.string().required(),
     location: Joi.string(),
-    isAdmin : Joi.boolean().required(),
-    status  : Joi.boolean()
+    isAdmin: Joi.boolean().required(),
+    status: Joi.boolean()
   };
 
-  return Joi.validate(user, schema);
+  return Joi.validate(user, schema, { abortEarly: false });
 }
 
 function validateUserLogin(user) {

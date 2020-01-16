@@ -4,15 +4,15 @@ const {
   validateUserRegistration,
   validateUserLogin
 } = require('./../validation/validateUsers')
+const config = require('./../../config');
+const jwt    = require('jsonwebtoken');
+
 
 module.exports = {
   getApiUsers: async (req, res, next) => {
     const findUsers = await usersChar.find(users => {
       return users;
     });
-
-    if (req.user.isAdmin) {
-    }
 
     try {
       if (req.user.isAdmin) {
@@ -35,12 +35,16 @@ module.exports = {
   },
 
   newUsers: async (req, res, next) => {
-    // ckeck validate
     const { error } = validateUserRegistration(req.body);
 
     if (error) {
+      let messages = [];
+      for (let i = 0; i < error.details.length; i++) {
+        const item = error.details[i];
+        messages.push(item.message)
+      }
       return res.status(401).send({
-        message: error.details[0].message
+        message: messages
       });
     }
 
@@ -48,9 +52,27 @@ module.exports = {
       email: req.body.email
     });
 
+    let userName = await usersChar.findOne({
+      user_name: req.body.user_name
+    });
+
+    let userPhone = await usersChar.findOne({
+      phone: req.body.phone
+    });
+
     if (emailExist) {
       return res.status(401).send({
+        message: "Email already registered."
+      });
+    }
+    if (userName) {
+      return res.status(401).send({
         message: "User already registered."
+      });
+    }
+    if (userPhone) {
+      return res.status(401).send({
+        message: "Number phone already registered."
       });
     }
 
@@ -68,9 +90,9 @@ module.exports = {
         fullname: user.fullname,
         location: user.location,
         email   : user.email,
-        isAdmin : user.isAdmin,
         avatar  : user.avatar,
-        _token  : _token
+        phone   : user.phone,
+        token   : _token
       });
     } catch (error) {
       console.log(error);
@@ -80,15 +102,22 @@ module.exports = {
     }
   },
 
+
   LoginUser: async (req, res, next) => {
     // ckeck validate
     const { error } = validateUserLogin(req.body);
-
+    
     if (error) {
+      let messages = [];
+      for (let i = 0; i < error.details.length; i++) {
+        const item = error.details[i];
+        messages.push(item.message)
+      }
       return res.status(401).send({
-        message: error.details[0].message
+        message: messages
       });
     }
+
 
     let user = await usersChar.findOne({
       user_name: req.body.user_name
@@ -113,15 +142,14 @@ module.exports = {
 
     console.log(`check password: ${validPassword}`);
 
-    const origin = req.headers.referer;
-
-    const path = origin.split(/[/]/)
-
-    if (path[3] === "login") {
-      if (!user.isAdmin) {
-        return res.status(400).send({
-          message: "You do not have access."
-        });
+    if (config.NODE_ENV === 'production') {
+      const origin = req.headers.host;
+      if (origin === config.DOMAIN_API) {
+        if (!user.isAdmin) {
+          return res.status(400).send({
+            message: "You do not have access."
+          });
+        }
       }
     }
 
@@ -132,9 +160,9 @@ module.exports = {
       fullname: user.fullname,
       location: user.location,
       email   : user.email,
-      isAdmin : user.isAdmin,
       avatar  : user.avatar,
-      _token  : _token
+      phone   : user.phone,
+      token   : _token
     });
     next();
   },
@@ -148,8 +176,16 @@ module.exports = {
     try {
       res.status(200).send({
         message: 'Get data success',
-        data   : findByIdUser
+        data   : {
+          _id     : findByIdUser._id,
+          fullname: findByIdUser.fullname,
+          location: findByIdUser.location,
+          email   : findByIdUser.email,
+          avatar  : findByIdUser.avatar,
+          phone   : findByIdUser.phone,
+        }
       });
+
     } catch (error) {
       res.status(400).send({
         message: `Error ID`
@@ -159,54 +195,53 @@ module.exports = {
   },
 
   updateData: async (req, res, next) => {
+
     const { error } = validateUserRegistration(req.body);
 
     if (error) {
+      let messages = [];
+      for (let i = 0; i < error.details.length; i++) {
+        const item = error.details[i];
+        messages.push(item.message)
+      }
       return res.status(401).send({
-        message: error.details[0].message
+        message: messages
       });
     }
 
     let id = req.params.id;
 
-    const findByIdUser = await usersChar.findById(
-      id,
-      (err, updateUser) => {
-        if (!updateUser) {
-          return res.status(404).send("data is not found");
-        } else {
-          updateUser.fullname  = req.body.fullname;
-          updateUser.user_name = req.body.user_name;
-          updateUser.password  = req.body.password;
-          updateUser.email     = req.body.email;
-          updateUser.avatar    = req.body.avatar;
-          updateUser.address   = req.body.address;
-          updateUser.location  = req.body.location;
-          updateUser.phone     = req.body.phone;
-          updateUser.status    = req.body.status;
-          updateUser.isAdmin   = req.body.isAdmin;
+    const findByIdUser = await usersChar.findById(id);
 
-          updateUser.password = bcrypt.hashSync(updateUser.password, 1);
+    if (!findByIdUser) {
+      console.log(error);
 
-          updateUser.save();
+      return res.status(404).send({
+        message: "data is not found"
+      });
+    }
+        findByIdUser.fullname  = req.body.fullname;
+        findByIdUser.user_name = req.body.user_name;
+        findByIdUser.password  = req.body.password;
+        findByIdUser.email     = req.body.email;
+        findByIdUser.avatar    = req.body.avatar;
+        findByIdUser.address   = req.body.address;
+        findByIdUser.location  = req.body.location;
+        findByIdUser.phone     = req.body.phone;
+        findByIdUser.status    = req.body.status;
+        findByIdUser.isAdmin   = req.body.isAdmin;
+        findByIdUser.password  = await bcrypt.hashSync(findByIdUser.password, 1);
+    let saveData               = await findByIdUser.save();
 
-          try {
+    try {
+      res.status(200).send({
+        message : "update complate",
+        business: saveData
+      });
+    } catch (error) {
+      console.log(error);
+    }
 
-            res.status(200).send({
-              message : "update complate",
-              business: updateUser
-            });
-
-          } catch (error) {
-            res.status(404).send({
-              message: "data is not found"
-            });
-            console.log(error);
-          }
-          return updateUser;
-        }
-      }
-    );
   },
 
   deleteData: (req, res, next) => {

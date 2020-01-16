@@ -33,6 +33,6 @@ const validateCart = data => {
     delivery_address: Joi.object(),
   };
 
-  return Joi.validate(data, schema);
+  return Joi.validate(data, schema, { abortEarly: false });
 };
 module.exports = validateCart;

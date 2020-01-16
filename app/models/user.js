@@ -14,13 +14,14 @@ const users = new Schema({
     required : true,
     minlength: 3,
     maxlength: 50,
-    unique   : true
+    unique   : true,
+    lowercase: true,
   },
   password: {
     type     : String,
     required : true,
     minlength: 3,
-    maxlength: 255
+    maxlength: 255,
   },
   email: {
     type     : String,
@@ -68,15 +69,21 @@ const users = new Schema({
 });
 
 users.methods.generateAuthToken = function () {
+  const today = new Date();
+  let   exp   = new Date(today);
+  const seft  = this;
+  exp.setDate(today.getDate() + 60);
+
+
   const _toke = jwt.sign(
     {
-      _id      : this._id,
-      user_name: this.user_name,
-      isAdmin  : this.isAdmin
+      _id      : seft._id,
+      user_name: seft.user_name,
+      isAdmin  : seft.isAdmin,
     },
     config.PRIVATEKEY,
     {
-      expiresIn: 60 * 60 * 24  // expires in 24 hours
+      expiresIn: '2h'
     }
   );
   return _toke;

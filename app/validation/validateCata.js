@@ -9,7 +9,7 @@ const validateCatalog = data => {
     descriptionCatalog: Joi.string()
   };
 
-  return Joi.validate(data, schema);
+  return Joi.validate(data, schema, { abortEarly: false });
 };
 
 module.exports = validateCatalog;
