@@ -1,7 +1,6 @@
 const multer     = require("multer");
 const imagesChar = require("../models/images");
 const config     = require("../../config");
-// const mongoose = require("mongoose");
 
 
 module.exports = {

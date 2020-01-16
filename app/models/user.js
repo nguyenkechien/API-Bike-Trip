@@ -69,12 +69,7 @@ const users = new Schema({
 });
 
 users.methods.generateAuthToken = function () {
-  const today = new Date();
-  let   exp   = new Date(today);
   const seft  = this;
-  exp.setDate(today.getDate() + 60);
-
-
   const _toke = jwt.sign(
     {
       _id      : seft._id,
