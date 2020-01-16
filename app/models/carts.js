@@ -1,13 +1,13 @@
 const mongoose = require("mongoose");
-const Schema   = mongoose.Schema;
+const Schema = mongoose.Schema;
 
 // Creat Schame anh model
 
 const visaCardSchema = new Schema({
-  cvv         : {type: Number, default: 000},
-  name_on_card: {type: String, default: ''},
-  card_number : {type: Number, default: 0},
-  expiry_date : {type: String, default: ''}
+  cvv: { type: Number, default: 000 },
+  name_on_card: { type: String, default: '' },
+  card_number: { type: Number, default: 0 },
+  expiry_date: { type: String, default: '' }
 });
 
 /**
@@ -16,14 +16,23 @@ const visaCardSchema = new Schema({
 const carts = new Schema({
   user: {
     type: mongoose.Schema.Types.ObjectId,
-    ref : 'users'
+    ref: 'users'
   },
-  products: [{
-    type: mongoose.Schema.Types.ObjectId,
-    ref : 'products'
-  }],
-  total_money     : { type: Number, required: true, default: 0 },
-  discount_code   : { type: String, default: '' },
+  products: [
+    {
+      product: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'products'
+      },
+      quantity: {
+        type: Number,
+        required: true,
+        default: 0
+      }
+    }
+  ],
+  total_money: { type: Number, required: true, default: 0 },
+  discount_code: { type: String, default: '' },
   delivery_address: {
     address: {
       type: String, default: '', required: true
@@ -35,9 +44,9 @@ const carts = new Schema({
       type: String, default: '', required: true
     },
   },
-  visaCard  : visaCardSchema,
+  visaCard: visaCardSchema,
   order_date: {
-    type   : Date,
+    type: Date,
     default: Date.now
   },
   status: { type: Boolean, required: true, default: false }
