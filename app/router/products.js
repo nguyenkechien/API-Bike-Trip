@@ -12,10 +12,10 @@ productsRoutes.route('/').get(productsController.getProducts);
 productsRoutes.route('/content/save').post(productsController.newProduct);
 
 // Defined get edit iddata route
-productsRoutes.route('/content/:id').get(productsController.getIdData);
+productsRoutes.route('/content?:id').get(productsController.getIdData);
 
 //  Defined update route post
-productsRoutes.route('/content/update/:id').post(auth, productsController.updateData)
+productsRoutes.route('/content?:id').post(auth, productsController.updateData)
 
 // Defined delete route
 productsRoutes.route('/content/delete/:id').get(productsController.deleteData);
