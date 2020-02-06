@@ -10,6 +10,11 @@ const jwt    = require('jsonwebtoken');
 
 module.exports = {
   getApiUsers: async (req, res, next) => {
+    if (req.headers.origin !== config.DOMAINPAGE) {
+      return res.status(401).send({
+        message: 'Note domain my page'
+      });
+    }
     const findUsers = await usersChar.find(users => {
       return users;
     });
@@ -35,6 +40,11 @@ module.exports = {
   },
 
   newUsers: async (req, res, next) => {
+    if (req.headers.origin !== config.DOMAINPAGE) {
+      return res.status(401).send({
+        message: 'Note domain my page'
+      });
+    }
     const { error } = validateUserRegistration(req.body);
 
     if (error) {
@@ -104,6 +114,11 @@ module.exports = {
 
 
   LoginUser: async (req, res, next) => {
+    if (req.headers.origin !== config.DOMAINPAGE) {
+      return res.status(401).send({
+        message: 'Note domain my page'
+      });
+    }
     // ckeck validate
     const { error } = validateUserLogin(req.body);
     
@@ -125,6 +140,7 @@ module.exports = {
 
     if (!user) {
       return res.status(404).send({
+        user_name: true,
         message: "User Name is wrong."
       });
     }
@@ -136,6 +152,7 @@ module.exports = {
 
     if (!validPassword) {
       return res.status(404).send({
+        password: true,
         message: "Invalid password."
       });
     }
@@ -156,7 +173,6 @@ module.exports = {
     const _token = user.generateAuthToken();
 
     res.header("x-auth-token", _token).send({
-      _id     : user._id,
       fullname: user.fullname,
       location: user.location,
       email   : user.email,

@@ -40,7 +40,8 @@ function validateUserLogin(user) {
     password: Joi.string()
       .min(3)
       .max(255)
-      .required()
+      .required(),
+    remember: Joi.boolean()
   };
 
   return Joi.validate(user, schema);

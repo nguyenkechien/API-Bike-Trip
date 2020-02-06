@@ -4,5 +4,6 @@ module.exports = {
   PRIVATEKEY: process.env.PRIVATEKEY,
   DB        : process.env.DB,
   PORT      : process.env.PORT,
-  DRIVE     : __dirname
+  DRIVE     : __dirname,
+  DOMAINPAGE: process.env.DOMAINPAGE
 }; 
