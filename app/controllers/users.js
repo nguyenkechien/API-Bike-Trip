@@ -1,4 +1,4 @@
-const usersChar = require("../models/user");
+const {usersChar, userType} = require("../models/user");
 const bcrypt    = require("bcrypt");
 const {
   validateUserRegistration,
@@ -133,7 +133,9 @@ module.exports = {
       });
     }
 
-
+    /**
+     * @type {userType}
+     */
     let user = await usersChar.findOne({
       user_name: req.body.user_name
     });
@@ -145,10 +147,7 @@ module.exports = {
       });
     }
 
-    let validPassword = await bcrypt.compareSync(
-      req.body.password,
-      user.password
-    );
+    let validPassword = bcrypt.compareSync(req.body.password, user.password);
 
     if (!validPassword) {
       return res.status(404).send({
@@ -173,6 +172,7 @@ module.exports = {
     const _token = user.generateAuthToken();
 
     res.header("x-auth-token", _token).send({
+      user_name: user.user_name,
       fullname: user.fullname,
       location: user.location,
       email   : user.email,

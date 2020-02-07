@@ -4,6 +4,20 @@ const jwt      = require("jsonwebtoken");
 const config   = require("../../config");
 // Creat Schame anh model
 
+const userType = {
+  fullname: String,
+  user_name: String,
+  password: String,
+  email: String,
+  avatar: String,
+  address: String,
+  location: String,
+  phone: String,
+  date: Date,
+  isAdmin: Boolean,
+  status: Boolean
+}
+
 const users = new Schema({
   fullname: {
     type   : String,
@@ -85,4 +99,7 @@ users.methods.generateAuthToken = function () {
 };
 const usersChar = mongoose.model("users", users);
 
-module.exports = usersChar;
+module.exports = {
+  usersChar: usersChar,
+  userType: userType
+};
